@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const resumeFile = formData.get('resume') as File
 
     // Read the resume file
-    let resumeAttachment: any = undefined
+    let resumeAttachment: { filename: string; content: Buffer } | undefined = undefined
     if (resumeFile && typeof resumeFile.arrayBuffer === 'function') {
       const buffer = Buffer.from(await resumeFile.arrayBuffer())
       resumeAttachment = {
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json({ success: true })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Join form error:', error)
     return NextResponse.json({ error: 'Failed to submit application.' }, { status: 500 })
   }

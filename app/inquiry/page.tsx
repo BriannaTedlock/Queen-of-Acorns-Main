@@ -18,18 +18,19 @@ export default function InquiryPage() {
     e.preventDefault()
     setLoading(true)
 
-    const formData = new FormData(e.currentTarget)
-    const data: Record<string, any> = {}
+   const formData = new FormData(e.currentTarget)
+const data: Record<string, string | string[]> = {}
 
-      formData.forEach((value, key) => {
-    if (key.endsWith("[]")) {
-      const realKey = key.replace("[]", "");
-      if (!data[realKey]) data[realKey] = [];
-      data[realKey].push(value);
-    } else {
-      data[key] = value;
-    }
-  });
+formData.forEach((value, key) => {
+  if (key.endsWith("[]")) {
+    const realKey = key.replace("[]", "");
+    if (!data[realKey]) data[realKey] = [];
+    (data[realKey] as string[]).push(value.toString());
+  } else {
+    data[key] = value.toString();
+  }
+});
+
 
     const res = await fetch("/api/inquiry", {
       method: "POST",
@@ -124,7 +125,7 @@ export default function InquiryPage() {
             {/* Add-ons */}
             <div>
               <Label className="text-lg block mb-2 mt-8 font-bold">
-                Add-ons you're interested in (select all that apply):
+                Add-ons you&apos;re interested in (select all that apply):
               </Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-4 text-sm capitalize">
                 {[

@@ -67,7 +67,7 @@ export default function GalleryPage() {
                       />
                     </DialogTrigger>
                     <DialogContent className="flex justify-center items-center max-w-full bg-transparent border-none p-2 sm:p-4">
-                      <img
+                      <Image
                         src={selectedImage || url}
                         alt="Preview"
                         className="max-h-[90vh] max-w-[90vw] object-contain rounded-md"

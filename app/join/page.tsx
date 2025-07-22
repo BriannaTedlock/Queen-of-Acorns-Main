@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Header } from '@/components/Header'
 import { Navbar } from '@/components/NavBar'
 import Footer from '@/components/Footer'
@@ -46,12 +45,12 @@ export default function JoinPage() {
       <section className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-center text-[#6d3b28] mb-4">Join Our Team!</h1>
         <p className="text-center text-base sm:text-lg text-[#3a2c27] max-w-2xl mx-auto mb-8">
-          Want to be a part of something magical? Fill out the form below and let us know why you'd be a great fit for the Queen of Acorns team!
+          Want to be a part of something magical? Fill out the form below and let us know why you&apos;d be a great fit for the Queen of Acorns team!
         </p>
 
         {submitted && (
           <div className="bg-green-100 text-green-700 border-l-4 border-green-500 p-4 rounded-md mb-8 text-sm sm:text-base">
-            🎉 Thank you for applying! We’ve received your submission and will reach out soon.
+            🎉 Thank you for applying! We&apos;ve received your submission and will reach out soon.
           </div>
         )}
 

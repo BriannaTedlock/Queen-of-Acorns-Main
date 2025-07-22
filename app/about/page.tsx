@@ -15,10 +15,10 @@ export default function AboutPage() {
         <section className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-10 space-y-6" data-aos="fade-up">
           <h1 className="text-3xl sm:text-4xl text-[#5a7238] text-center font-[Parisienne]">Meet the Queen 👑</h1>
           <p>
-            My sweet 1972 Cameo pull-behind camper. Although after a complete demo and renovation, starting all the way down to the framework, it may not be fair to say she’s a Cameo at all. She is a one-of-a-kind, handmade with a whole lotta love (sweat and tears included), hippy-dippy gem.
+            My sweet 1972 Cameo pull-behind camper. Although after a complete demo and renovation, starting all the way down to the framework, it may not be fair to say she&apos;s a Cameo at all. She is a one-of-a-kind, handmade with a whole lotta love (sweat and tears included), hippy-dippy gem.
           </p>
           <p>
-            Queen of Acorns was built on passion and creativity. She’s mastered the art of entertaining any event imaginable, serving up tasty cocktails, treats, and smiles to everyone in her presence!
+            Queen of Acorns was built on passion and creativity. She&apos;s mastered the art of entertaining any event imaginable, serving up tasty cocktails, treats, and smiles to everyone in her presence!
           </p>
           <Image
             src="/Images/bailey4.jpg"
@@ -29,7 +29,7 @@ export default function AboutPage() {
           />
 
           <blockquote className="bg-[#fff7ef] border-l-4 border-[#e08119] italic text-base p-4 text-gray-800">
-            “Vivacious and loving, she awakens the spark of life’s fervor in those who are around her. In touch with the freshness of life, she’s ruled by her heart’s passion. She’s wired by boundless energy and her sensitive yet fiery nature will keep her standing up for what she believes in...”
+            “Vivacious and loving, she awakens the spark of life&apos;s fervor in those who are around her. In touch with the freshness of life, she&apos;s ruled by her heart&apos;s passion. She&apos;s wired by boundless energy and her sensitive yet fiery nature will keep her standing up for what she believes in...”
             <footer className="text-sm mt-2">– Spiritsong Tarot, Paulina Cassidy</footer>
           </blockquote>
 
@@ -37,7 +37,7 @@ export default function AboutPage() {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1 space-y-4">
               <p>
-                Hi! I'm Bailey – creator and owner of Queen of Acorns. I’ve worked in hospitality for 12 years, spending most of that time behind the bar with a few years in restaurant management...
+                Hi! I&apos;m Bailey – creator and owner of Queen of Acorns. I&apos;ve worked in hospitality for 12 years, spending most of that time behind the bar with a few years in restaurant management...
               </p>
               <Image
                 src="/Images/bailey3.jpg"
