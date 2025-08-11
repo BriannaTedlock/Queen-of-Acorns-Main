@@ -18,19 +18,18 @@ export default function InquiryPage() {
     e.preventDefault()
     setLoading(true)
 
-   const formData = new FormData(e.currentTarget)
-const data: Record<string, string | string[]> = {}
+    const formData = new FormData(e.currentTarget)
+    const data: Record<string, string | string[]> = {}
 
-formData.forEach((value, key) => {
-  if (key.endsWith("[]")) {
-    const realKey = key.replace("[]", "");
-    if (!data[realKey]) data[realKey] = [];
-    (data[realKey] as string[]).push(value.toString());
-  } else {
-    data[key] = value.toString();
-  }
-});
-
+    formData.forEach((value, key) => {
+      if (key.endsWith("[]")) {
+        const realKey = key.replace("[]", "");
+        if (!data[realKey]) data[realKey] = [];
+        (data[realKey] as string[]).push(value.toString());
+      } else {
+        data[key] = value.toString();
+      }
+    });
 
     const res = await fetch("/api/inquiry", {
       method: "POST",
@@ -38,25 +37,34 @@ formData.forEach((value, key) => {
       body: JSON.stringify(data),
     })
     if (res.ok) {
-      // Remove toast, remove setTimeout, just redirect immediately
       window.location.href = "/thank-you"
-      // Or: router.push("/thank-you")
       return
     }
     setLoading(false)
   }
 
- return (
+  return (
     <>
       <Header />
       <Navbar />
       <div className="my-16 px-4">
-        
+        <div className="max-w-2xl mx-auto mb-8 text-center">
+  <h1 className="text-3xl sm:text-4xl font-bold text-[#222] mb-8">
+    Elevate Your Event!
+  </h1>
+  <p className="text-base sm:text-lg text-[#3a2c27]">
+    Contact us for <span className="font-semibold text-[#6d3b28]">BARTENDING & EVENT SERVICES</span>.<br />
+    Fill out the form below, and we will get back to you shortly.<br />
+    We look forward to working with you!
+  </p>
+</div>
+
         <Card className="max-w-3xl mx-auto p-6 sm:p-8 shadow-md bg-gradient-to-br from-[#fffaf5] to-[#fef2ea] rounded-2xl">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6 text-[#a36d48]">
             Let’s Make Magic Happen ✨
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
+
             {/* Main fields */}
             <div>
               <Label htmlFor="name">Your Name</Label>
@@ -74,30 +82,106 @@ formData.forEach((value, key) => {
               <Label htmlFor="event_date">Event Date</Label>
               <Input id="event_date" name="event_date" type='date' />
             </div>
+            
+            {/* --- GUEST COUNT as Dropdown --- */}
             <div>
               <Label htmlFor="guest_count">Estimated Guest Count</Label>
-              <Input id="guest_count" name="guest_count" />
+              <select
+                id="guest_count"
+                name="guest_count"
+                required
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="" disabled>Select...</option>
+                <option value="Under 25">Under 25</option>
+                <option value="25-50">25-50</option>
+                <option value="51-100">51-100</option>
+                <option value="101-150">101-150</option>
+                <option value="151-200">151-200</option>
+                <option value="201+">201+</option>
+              </select>
             </div>
+
             <div>
               <Label htmlFor="venue">Venue / Location</Label>
               <Input id="venue" name="venue" />
             </div>
+
+            {/* --- IS THERE A BAR ON SITE: Radio --- */}
             <div>
-              <Label htmlFor="bar_onsite">Is there a bar on-site?</Label>
-              <Input id="bar_onsite" name="bar_onsite" />
+              <Label>Is there a bar on-site?</Label>
+              <div className="flex gap-6 mt-2">
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="bar_onsite" value="Yes" required />
+                  Yes
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="bar_onsite" value="No" required />
+                  No
+                </label>
+              </div>
             </div>
+            
+            {/* --- HOW LONG SHOULD BAR BE OPEN: Dropdown --- */}
             <div>
               <Label htmlFor="bar_duration">How long should the bar be open?</Label>
-              <Input id="bar_duration" name="bar_duration" />
+              <select
+                id="bar_duration"
+                name="bar_duration"
+                required
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="" disabled>Select...</option>
+                <option value="1">1 Hour</option>
+                <option value="2">2 Hours</option>
+                <option value="3">3 Hours</option>
+                <option value="4">4 Hours</option>
+                <option value="5">5 Hours</option>
+                <option value="6+">6+ Hours</option>
+              </select>
             </div>
+
+            {/* --- PUBLIC OR PRIVATE EVENT: Dropdown (see your note) --- */}
             <div>
               <Label htmlFor="event_type">Public or Private Event?</Label>
-              <Input id="event_type" name="event_type" />
+              <select
+                id="event_type"
+                name="event_type"
+                required
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="" disabled>Select...</option>
+                <option value="Public (Beverages for Purchase)">Public (Beverages for Purchase)</option>
+                <option value="Public (Beverages Included)">Public (Beverages Included)</option>
+                <option value="Private (Beverages for Purchase)">Private (Beverages for Purchase)</option>
+                <option value="Private (Beverages Included)">Private (Beverages Included)</option>
+              </select>
             </div>
+
+            {/* --- HOW DID YOU HEAR ABOUT US: Dropdown --- */}
             <div>
               <Label htmlFor="referral">How did you hear about us?</Label>
-              <Input id="referral" name="referral" />
+              <select
+                id="referral"
+                name="referral"
+                required
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="" disabled>Select...</option>
+                <option value="Google/Search">Google/Search</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Wedding Website">Wedding Website</option>
+                <option value="Vendor Referral">Vendor Referral</option>
+                <option value="Friend/Word of Mouth">Friend/Word of Mouth</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
+
             {/* Bar Menu Checkboxes */}
             <div>
               <Label className="text-lg block mb-2 mt-8 font-bold">
@@ -154,7 +238,7 @@ formData.forEach((value, key) => {
             </Button>
           </form>
         </Card>
-         {/* Butterfly animation keyframes */}
+        {/* Butterfly animation keyframes */}
         <style jsx global>{`
           @keyframes fly1 {
             0% { transform: translate(0vw, 0vh) rotate(0deg); }

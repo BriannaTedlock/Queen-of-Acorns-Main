@@ -11,7 +11,7 @@ import {
 export function Navbar() {
   return (
     <div className="sticky top-0 z-50 border-y border-gray-200 bg-white">
-      <div className="max-w-4xl mx-auto w-full px-4">
+      <div className="max-w-4xl mx-auto w-full px-20">
         <NavigationMenu>
           <NavigationMenuList className="flex flex-wrap justify-center py-4 gap-x-4 gap-y-2 uppercase font-bold text-xs sm:text-sm tracking-wide">
             <NavigationMenuItem>
@@ -44,7 +44,6 @@ export function Navbar() {
                 Contact
               </Link>
             </NavigationMenuItem>
-            
           </NavigationMenuList>
         </NavigationMenu> 
       </div>

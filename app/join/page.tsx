@@ -42,17 +42,15 @@ export default function JoinPage() {
       <Header />
       <Navbar />
 
-      <section className="max-w-3xl mx-auto px-4 py-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-[#6d3b28] mb-4">Join Our Team!</h1>
-        <p className="text-center text-base sm:text-lg text-[#3a2c27] max-w-2xl mx-auto mb-8">
-          Want to be a part of something magical? Fill out the form below and let us know why you&apos;d be a great fit for the Queen of Acorns team!
-        </p>
-
-        {submitted && (
-          <div className="bg-green-100 text-green-700 border-l-4 border-green-500 p-4 rounded-md mb-8 text-sm sm:text-base">
-            🎉 Thank you for applying! We&apos;ve received your submission and will reach out soon.
-          </div>
-        )}
+          <section className="max-w-3xl mx-auto px-4 py-12">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-[#6d3b28] mb-4">
+        Join Our Team!
+      </h1>
+      <p className="text-center text-base sm:text-lg text-[#3a2c27] max-w-2xl mx-auto mb-8">
+        Contact us to learn more about how you can become a part of the Queen of Acorns mobile bar &amp; event planning family.<br />
+        Fill out the form below, and we will get back to you shortly.<br />
+        We look forward to meeting you!
+      </p>
 
         <Card className="p-6 sm:p-8 shadow-md bg-white rounded-xl">
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">

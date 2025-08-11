@@ -120,3 +120,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Make Alice the default fonts everywhere */
+@theme {
+  --font-sans: var(--font-alice), serif;
+  --font-serif: var(--font-alice), serif;
+  --font-mono: var(--font-alice), serif; /* if you want code to be Alice too */
+}
