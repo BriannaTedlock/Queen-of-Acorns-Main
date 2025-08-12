@@ -339,8 +339,8 @@ export default function Home() {
       style={{ fontFamily: '"Canva Sans", sans-serif' }}
       type="button"
     >
-      Here
-      <Image src="/Images/hand-click.png" alt="Click" width={28} height={28} className="ml-2" />
+       Click Here
+      <Image src="/Images/click.png" alt="Click" width={28} height={28} className="ml-2" />
     </button>
     </Link>
     <p className="text-base text-black mt-2 text-center max-w-xs">

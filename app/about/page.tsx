@@ -120,23 +120,23 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center">
               <div className="w-full h-[290px] rounded-2xl mb-4 bg-[#f3f3ec] flex items-center justify-center">
                 <Image
-                  src="/Images/team_brianna.jpg"
+                  src="/Images/About/temp.png"
                   alt="Brianna Tedlock"
                   width={160}
                   height={160}
                   className="rounded-2xl object-cover"
                 />
               </div>
-              <h3 className="font-bold text-xl mb-2">Brianna Tedlock</h3>
+              <h3 className="font-bold text-xl mb-2">Brianna & Omar</h3>
               <p className="text-base">
-                Bri is our amazing website and SEO specialist!
+                Brianna is the creative front-end of Queen of Acorns’ website — bringing Bailey’s vision to life with beautiful layouts, playful touches, and a design that feels just as charming and inviting as the mobile bar itself. Omar works his magic behind the scenes, building the technical foundation that keeps everything running smoothly and flawlessly. Together, as Dawn of Design, they’ve crafted an online home that captures the spirit of Queen of Acorns from the first click to the last scroll.
               </p>
             </div>
             {/* Team Member 5 */}
             <div className="flex flex-col items-center text-center">
               <div className="w-full h-[290px] rounded-2xl mb-4 bg-[#f3f3ec] flex items-center justify-center">
                 <Image
-                  src="/Images/team_laura.jpg"
+                  src="/Images/About/temp.png"
                   alt="Laura Coates Randall"
                   width={160}
                   height={160}
@@ -152,7 +152,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center justify-between">
               <div className="flex-1 flex flex-col items-center justify-center mb-4">
                 <Image
-                  src="/Images/hiring_sign.png"
+                  src="/Images/About/hiring_sign.png"
                   alt="We are hiring"
                   width={170}
                   height={150}
