@@ -11,7 +11,6 @@ import { Navbar } from '@/components/NavBar'
 import Footer from '@/components/Footer'
 
 export default function JoinPage() {
-  const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

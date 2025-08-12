@@ -7,8 +7,26 @@ import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
 import React from 'react';
 import ScrollPlayVideo from '@/components/ScrollPlayVideo';
+import CocktailCarousel, { Cocktail } from '@/components/CocktailCarousel';
 
 export default function Home() {
+ const cocktails: Cocktail[] = [
+    { name: "Cherry Aperol Bourbon n' Coke", image: "/Images/Cocktails/CherryAperolBourbonCoke.jpeg" },
+    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonBerryHibiscusRumMule.jpeg" },
+    { name: "Expresso Martini", image: "/Images/Cocktails/ExpressoMartini.jpeg" },
+    { name: "Frose and Apple Cider Mule", image: "/Images/Cocktails/FroseandAppleCiderMule.jpeg" },
+    { name: "Mandarin Creamsicle Margarita", image: "/Images/Cocktails/MandarinCreamsicleMargarita.jpeg" },
+    { name: "Old Fashioned & Paloma", image: "/Images/Cocktails/OldFashionedandPaloma.jpeg" },
+    { name: "Pina Colada & Margarita Funnel Cake", image: "/Images/Cocktails/PinaColadaMargaritaandFrozenFunnelCake.jpeg" },
+    { name: "The Queen Bee", image: "/Images/Cocktails/TheQueenBee.png" },
+    { name: "Upside Down Pineapple Cake", image: "/Images/Cocktails/UpsideDownPineappleCake.jpeg" },
+    { name: "Whiskey Caramel Apple Pop", image: "/Images/Cocktails/WhiskeyCaramelApplePop.jpeg" },
+    { name: "Sparklin' Raspberry Sherbert", image: "/Images/Cocktails/SparklinRaspberrySherbert.jpeg" },
+    { name: "S'mores Martini", image: "/Images/Cocktails/SmoresMartini.jpeg" },
+    { name: "Spiked Cherry Limeade", image: "/Images/Cocktails/SpikedCherryLimeade.jpeg" },
+    { name: "Watermelon Margarita | Cucumber & Mint Matcha Martini", image: "/Images/Cocktails/WMCMMM.jpeg" },
+  ];
+
   return (
     <>
       <Header />
@@ -245,87 +263,12 @@ export default function Home() {
 
     {/* Right: Carousel */}
     <div className="flex-1 w-full flex flex-col items-center">
-      {/* Inline Cocktail Data & Carousel */}
-      {(() => {
-  const cocktails = [
-    { name: "Cherry Aperol Bourbon n' Coke", image: "/Images/Cocktails/CherryAperolBourbonCoke.jpeg" },
-    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonBerryHibiscusRumMule.jpeg" },
-    { name: "Expresso Martini", image: "/Images/Cocktails/ExpressoMartini.jpeg" },
-    { name: "Frose and Apple Cider Mule", image: "/Images/Cocktails/FroseandAppleCiderMule.jpeg" },
-    { name: "Mandarin Creamsicle Margarita", image: "/Images/Cocktails/MandarinCreamsicleMargarita.jpeg" },
-    { name: "Old Fashioned & Paloma", image: "/Images/Cocktails/OldFashionedandPaloma.jpeg" },
-    { name: "Pina Colada & Margarita Funnel Cake", image: "/Images/Cocktails/PinaColadaMargaritaandFrozenFunnelCake.jpeg" },
-    { name: "The Queen Bee", image: "/Images/Cocktails/TheQueenBee.png" },
-    { name: "Upside Down Pineapple Cake", image: "/Images/Cocktails/UpsideDownPineappleCake.jpeg" },
-    { name: "Whiskey Caramel Apple Pop", image: "/Images/Cocktails/WhiskeyCaramelApplePop.jpeg" },
-    { name: "Sparklin' Raspberry Sherbert", image: "/Images/Cocktails/SparklinRaspberrySherbert.jpeg" },
-    { name: "S'mores Martini", image: "/Images/Cocktails/SmoresMartini.jpeg" },
-    { name: "Spiked Cherry Limeade", image: "/Images/Cocktails/SpikedCherryLimeade.jpeg" },
-    { name: "Watermelon Margarita | Cucumber & Mint Matcha Martini", image: "/Images/Cocktails/WMCMMM.jpeg" },
-  ];
-
-  const [idx, setIdx] = React.useState(0);
-  const [paused, setPaused] = React.useState(false);
-  const total = cocktails.length;
-
-  const prev = () => setIdx((i) => (i - 1 + total) % total);
-  const next = () => setIdx((i) => (i + 1) % total);
-
-  // Auto-rotate
-  React.useEffect(() => {
-    if (paused || total <= 1) return;
-    const id = setInterval(() => setIdx((i) => (i + 1) % total), 4000);
-    return () => clearInterval(id);
-  }, [paused, total]);
-
-  return (
-    <div className="w-full max-w-[380px] flex flex-col items-center">
-      {/* Green card (taller + no overflow). Pause on hover */}
-      <div
-        className="relative w-full rounded-3xl shadow-lg overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        {/* Tall aspect so all portraits fit comfortably */}
-        <div className="relative w-full aspect-[3/4]">
-          <Image
-            key={cocktails[idx].image}
-            src={cocktails[idx].image}
-            alt={cocktails[idx].name}
-            fill
-            className="object-cover rounded-xl"
-            sizes="(max-width: 768px) 90vw, 380px"
-            priority
-          />
-        </div>
-
-        {/* Controls */}
-        <button
-          onClick={prev}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full shadow p-2"
-          aria-label="Previous cocktail"
-        >
-          &#8592;
-        </button>
-        <button
-          onClick={next}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full shadow p-2"
-          aria-label="Next cocktail"
-        >
-          &#8594;
-        </button>
+      <CocktailCarousel cocktails={cocktails} />
       </div>
-
-      <div className="mt-3 text-lg font-semibold text-green-800 text-center px-2">
-        {cocktails[idx].name}
       </div>
-    </div>
-  );
-})()}
-
-    </div>
-  </div>
 </section>
+
+      
    {/* How Booking Works */}
         <div className="flex flex-col md:flex-row justify-center gap-8">
   {/* STEP 1 */}
