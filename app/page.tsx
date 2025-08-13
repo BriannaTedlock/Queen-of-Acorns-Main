@@ -220,19 +220,14 @@ export default function Home() {
     </div>
   </div>
 </section>
-  <div className="mt-12 flex flex-col items-end">
-  <span
-    className="font-extrabold mt-2 text-left"
-    style={{
-      fontSize: "22.5px",
-      marginRight: "18.25rem", // about 20px, adjust as needed
-    }}
-  >
-    Take a peek at our cocktail look-book!
-  </span>
+  {/* Responsive look-book heading */}
+<div className="mt-12 px-4">
+  <div className="mx-auto max-w-6xl flex justify-center md:justify-end md:pr-16 lg:pr-24">
+    <span className="font-extrabold text-center md:text-right text-lg sm:text-xl md:text-2xl">
+      Take a peek at our cocktail look-book!
+    </span>
+  </div>
 </div>
-
-
         {/* Cocktail Look-Book Section */}
 <section className="max-w-6xl mx-auto px-4 py-16" data-aos="fade-up">
   <div className="flex flex-col md:flex-row items-center gap-12 bg-white/70 rounded-3xl shadow-lg p-8">
@@ -381,16 +376,17 @@ export default function Home() {
             Thank you to all of our amazing clients who trust us to pour the magic!
           </p>
           {/* Medium-width Awards Image with Cropping */}
-            <div className="w-full flex justify-center my-4">
-              <Image
-                src="/Images/awards_choice.png"
-                alt="Queen of Acorns Awards"
-                width={1200}
-                height={400}
-                className="w-full max-w-4xl h-64 object-cover rounded-lg shadow-md"
-                priority
-              />
-            </div>
+            <div className="mx-auto max-w-5xl overflow-hidden rounded-xl shadow">
+            <Image
+              src="/Images/awards_choice.png"
+              alt="Queen of Acorns awards and recognitions"
+              width={1920}
+              height={600}
+              // Mobile: show full image (no crop). md+: crop top/bottom to tighten space.
+              className="w-full h-auto md:h-56 lg:h-64 object-contain md:object-cover md:object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 960px"
+            />
+          </div>
 
 
         </section>
