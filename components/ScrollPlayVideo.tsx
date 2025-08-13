@@ -47,50 +47,34 @@ export default function ScrollPlayVideo({
   }, []);
 
   // NEW: best-effort auto-unmute when allowed by the browser
- useEffect(() => {
-  const v = videoRef.current;
-  if (!v) return;
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
 
-  const tryPlay = async () => {
-    // keep your policy: unmute only if allowed
-    v.muted = !canUnmute;
-    v.playsInline = true;
+    const tryUnmute = async () => {
+      // If the user has interacted OR the browser otherwise permits, this may succeed.
+      try {
+        v.muted = false;
+        v.volume = 1;
+        await v.play();
+      } catch {
+        // If blocked, keep muted (policy)
+        v.muted = true;
+      }
+    };
 
-    // If Safari/iOS lost the buffer, reload source
-    if (v.readyState < 2) v.load();
+    // Try after metadata loads (source known), and again after "canplay"
+    const onLoaded = () => { if (isVisible) tryUnmute(); };
+    const onCanPlay = () => { if (isVisible) tryUnmute(); };
 
-    try {
-      await v.play();
-    } catch {
-      // fall back to muted autoplay if blocked
-      v.muted = true;
-      v.play().catch(() => {});
-    }
-  };
+    v.addEventListener("loadedmetadata", onLoaded);
+    v.addEventListener("canplay", onCanPlay);
 
-  const onPageShow = () => {
-    // Resume only if the element should be visible
-    if (isVisible) tryPlay();
-  };
-
-  const onVisibility = () => {
-    if (document.visibilityState === "visible") {
-      if (isVisible) tryPlay();
-    } else {
-      v.pause();
-      v.muted = true;
-    }
-  };
-
-  window.addEventListener("pageshow", onPageShow);
-  document.addEventListener("visibilitychange", onVisibility);
-
-  return () => {
-    window.removeEventListener("pageshow", onPageShow);
-    document.removeEventListener("visibilitychange", onVisibility);
-  };
-}, [canUnmute, isVisible]);
-
+    return () => {
+      v.removeEventListener("loadedmetadata", onLoaded);
+      v.removeEventListener("canplay", onCanPlay);
+    };
+  }, [isVisible]);
 
   // Play/pause + fade on visibility
   useEffect(() => {
@@ -187,7 +171,8 @@ export default function ScrollPlayVideo({
         src={src}
         autoPlay
         loop
-        preload="auto"
+        preload="metadata"
+        // NEW: adds inline playback explicitly for iOS and keeps it responsive
         playsInline
         className={clsx(
           "h-full w-full object-cover transition-opacity duration-700",
