@@ -5,11 +5,11 @@ import clsx from "clsx";
 
 interface ScrollPlayVideoProps {
   src: string;
-  containerClassName?: string; // styles for the outer absolutely-positioned wrapper
-  videoClassName?: string;     // styles for the <video>
-  resetOnView?: boolean;       // restart from 0 when it becomes visible again
-  parallax?: boolean;          // enable subtle scroll drift
-  driftPx?: number;            // max translateY, default 10
+  containerClassName?: string;
+  videoClassName?: string;
+  resetOnView?: boolean;
+  parallax?: boolean;
+  driftPx?: number;
 }
 
 export default function ScrollPlayVideo({
@@ -46,6 +46,52 @@ export default function ScrollPlayVideo({
     };
   }, []);
 
+  // NEW: best-effort auto-unmute when allowed by the browser
+ useEffect(() => {
+  const v = videoRef.current;
+  if (!v) return;
+
+  const tryPlay = async () => {
+    // keep your policy: unmute only if allowed
+    v.muted = !canUnmute;
+    v.playsInline = true;
+
+    // If Safari/iOS lost the buffer, reload source
+    if (v.readyState < 2) v.load();
+
+    try {
+      await v.play();
+    } catch {
+      // fall back to muted autoplay if blocked
+      v.muted = true;
+      v.play().catch(() => {});
+    }
+  };
+
+  const onPageShow = () => {
+    // Resume only if the element should be visible
+    if (isVisible) tryPlay();
+  };
+
+  const onVisibility = () => {
+    if (document.visibilityState === "visible") {
+      if (isVisible) tryPlay();
+    } else {
+      v.pause();
+      v.muted = true;
+    }
+  };
+
+  window.addEventListener("pageshow", onPageShow);
+  document.addEventListener("visibilitychange", onVisibility);
+
+  return () => {
+    window.removeEventListener("pageshow", onPageShow);
+    document.removeEventListener("visibilitychange", onVisibility);
+  };
+}, [canUnmute, isVisible]);
+
+
   // Play/pause + fade on visibility
   useEffect(() => {
     const container = containerRef.current;
@@ -53,17 +99,17 @@ export default function ScrollPlayVideo({
     if (!container || !video) return;
 
     // Autoplay compliance
-    video.muted = true;
-    video.playsInline = true;
+    video.muted = true;           // start muted so autoplay works
+    video.playsInline = true;     // NEW: iOS inline playback
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setIsVisible(true); // fade in
+            setIsVisible(true);
             if (resetOnView) video.currentTime = 0;
 
-            // allow sound only after user gesture
+            // allow sound only after user gesture (policy)
             video.muted = !canUnmute;
 
             // attempt play; if blocked, stay muted and retry
@@ -72,9 +118,9 @@ export default function ScrollPlayVideo({
               video.play().catch(() => {});
             });
           } else {
-            setIsVisible(false); // fade out
+            setIsVisible(false);
             video.pause();
-            video.muted = true; // re-mute out of view
+            video.muted = true;
           }
         }
       },
@@ -97,10 +143,7 @@ export default function ScrollPlayVideo({
       raf = requestAnimationFrame(() => {
         const rect = el.getBoundingClientRect();
         const vh = window.innerHeight || 1;
-
-        // progress clamped 0..1 as the element moves through the viewport
         const progress = Math.max(0, Math.min(1, 1 - rect.top / vh));
-        // map to -driftPx..+driftPx, centered around mid-viewport
         const offset = (progress - 0.5) * 2 * driftPx;
 
         el.style.transform = `translateY(${offset.toFixed(2)}px)`;
@@ -132,7 +175,6 @@ export default function ScrollPlayVideo({
   };
 
   return (
-    // IMPORTANT: absolute + inset-0 fills the aspect ratio box in the parent
     <div
       ref={containerRef}
       className={clsx("absolute inset-0", containerClassName)}
@@ -145,7 +187,8 @@ export default function ScrollPlayVideo({
         src={src}
         autoPlay
         loop
-        preload="metadata"
+        preload="auto"
+        playsInline
         className={clsx(
           "h-full w-full object-cover transition-opacity duration-700",
           "[@media(prefers-reduced-motion:reduce)]:transition-none",

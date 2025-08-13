@@ -109,25 +109,26 @@ export default function JoinPage() {
         {/* bottom artwork */}
         <div className="mt-10 pt-8 ">
           <div className="flex justify-center mb-8 overflow-hidden rounded-lg" style={{ clipPath: 'inset(0 0 40px 0)' }}>
-    <Image
-      src="/Images/swirl_qoa.png"
-      alt="" // decorative
-      role="presentation"
-      width={1200}
-      height={600}
-      className="w-full max-w-3xl h-auto"
-      sizes="(max-width: 768px) 92vw, 48rem"
-    />
-  </div>
+            <Image
+              src="/Images/swirl_qoa.png"
+              alt="" // decorative
+              role="presentation"
+              width={1200}
+              height={600}
+              className="w-full max-w-3xl h-auto"
+              sizes="(max-width: 768px) 92vw, 48rem"
+            />
+          </div>
           {/* Medium-width Awards Image with Cropping */}
-          <div className="w-full flex justify-center my-4">
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-xl shadow">
             <Image
               src="/Images/awards_choice.png"
-              alt="Queen of Acorns Awards"
-              width={1200}
-              height={400}
-              className="w-full max-w-4xl h-64 object-cover rounded-lg"
-              priority
+              alt="Queen of Acorns awards and recognitions"
+              width={1920}
+              height={600}
+              // Mobile: show full image (no crop). md+: crop top/bottom to tighten space.
+              className="w-full h-auto md:h-56 lg:h-64 object-contain md:object-cover md:object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 960px"
             />
           </div>
 
