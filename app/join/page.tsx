@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card"
 import { Header } from '@/components/Header'
 import { Navbar } from '@/components/NavBar'
 import Footer from '@/components/Footer'
+import Image from 'next/image'
 
 export default function JoinPage() {
   const [loading, setLoading] = useState(false)
@@ -19,7 +20,6 @@ export default function JoinPage() {
     const form = e.currentTarget
     const formData = new FormData(form)
 
-    // Use your own API endpoint
     const response = await fetch('/api/join', {
       method: 'POST',
       body: formData,
@@ -27,29 +27,39 @@ export default function JoinPage() {
 
     setLoading(false)
 
-  
-
-   if (response.ok) {
-    form.reset()
-    window.location.href = "/join-thank-you"   // or use router.push if you prefer  
+    if (response.ok) {
+      form.reset()
+      window.location.href = "/join-thank-you"
     }
   }
-  
 
   return (
     <>
       <Header />
       <Navbar />
 
-          <section className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl sm:text-4xl font-bold text-center text-[#6d3b28] mb-4">
-        Join Our Team!
-      </h1>
-      <p className="text-center text-base sm:text-lg text-[#3a2c27] max-w-2xl mx-auto mb-8">
-        Contact us to learn more about how you can become a part of the Queen of Acorns mobile bar &amp; event planning family.<br />
-        Fill out the form below, and we will get back to you shortly.<br />
-        We look forward to meeting you!
-      </p>
+      <section className="max-w-3xl mx-auto px-4 py-12">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center text-[#6d3b28] mb-4">
+          Join Our Team!
+        </h1>
+        <p className="text-center text-base sm:text-lg text-[#3a2c27] max-w-2xl mx-auto mb-8">
+          Contact us to learn more about how you can become a part of the Queen of Acorns mobile bar &amp; event planning family.<br />
+          Fill out the form below, and we will get back to you shortly.<br />
+          We look forward to meeting you!
+        </p>
+
+        {/* Ripped photo under paragraph (matches form width) */}
+        <div className="flex justify-center mb-10">
+          <Image
+            src="/Images/ripped_qoa.png"
+            alt="Queen of Acorns team in front of the mobile bar"
+            width={1200}
+            height={700}
+            className="w-full max-w-3xl h-auto object-contain [filter:drop-shadow(0_6px_12px_rgba(0,0,0,0.12))]"
+            sizes="(max-width: 768px) 92vw, 48rem"
+            priority
+          />
+        </div>
 
         <Card className="p-6 sm:p-8 shadow-md bg-white rounded-xl">
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
@@ -95,6 +105,33 @@ export default function JoinPage() {
             </Button>
           </form>
         </Card>
+
+        {/* bottom artwork */}
+        <div className="mt-10 pt-8 ">
+          <div className="flex justify-center mb-8 overflow-hidden rounded-lg" style={{ clipPath: 'inset(0 0 40px 0)' }}>
+    <Image
+      src="/Images/swirl_qoa.png"
+      alt="" // decorative
+      role="presentation"
+      width={1200}
+      height={600}
+      className="w-full max-w-3xl h-auto"
+      sizes="(max-width: 768px) 92vw, 48rem"
+    />
+  </div>
+          {/* Medium-width Awards Image with Cropping */}
+          <div className="w-full flex justify-center my-4">
+            <Image
+              src="/Images/awards_choice.png"
+              alt="Queen of Acorns Awards"
+              width={1200}
+              height={400}
+              className="w-full max-w-4xl h-64 object-cover rounded-lg"
+              priority
+            />
+          </div>
+
+        </div>
       </section>
 
       <Footer />

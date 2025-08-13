@@ -349,7 +349,7 @@ export default function Home() {
         className="flex flex-col items-center bg-white rounded-2xl shadow-lg p-8 w-full md:w-96 mx-auto transition hover:-translate-y-1"
       >
         {/* Optional: Star or quote icon */}
-        <span className="text-3xl text-yellow-400 mb-3">★</span>
+        <span className="text-3xl text-yellow-400 mb-3">★★★★★</span>
         {/* Avatar with colored ring */}
         <div className="mb-3">
           <Image
@@ -380,17 +380,19 @@ export default function Home() {
           <p className="text-sm text-gray-700 mt-2">
             Thank you to all of our amazing clients who trust us to pour the magic!
           </p>
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-8 mt-10">
-            {['award-1.png', 'award-2.png', 'award-3.png', 'award-4.png', 'award-5.png'].map((src, i) => (
+          {/* Medium-width Awards Image with Cropping */}
+            <div className="w-full flex justify-center my-4">
               <Image
-                key={i}
-                src={`/Images/${src}`}
-                alt={`Award ${i + 1}`}
-                width={120}
-                height={120}
+                src="/Images/awards_choice.png"
+                alt="Queen of Acorns Awards"
+                width={1200}
+                height={400}
+                className="w-full max-w-4xl h-64 object-cover rounded-lg shadow-md"
+                priority
               />
-            ))}
-          </div>
+            </div>
+
+
         </section>
 
         <Footer />
