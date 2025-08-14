@@ -82,8 +82,8 @@ export default function Home() {
     <ScrollPlayVideo
       src="https://cqpq0knj64bowgo5.public.blob.vercel-storage.com/Promo_Video.MP4"
       parallax
-      driftPx={10}     // tweak 8–12 for subtlety
-      // resetOnView     // enable if you want it to restart each time
+      driftPx={10}     
+      // type is
     />
   </div>
 </div>

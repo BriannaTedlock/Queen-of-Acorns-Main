@@ -53,9 +53,9 @@ export default function ScrollPlayVideo({
 
   const tryPlay = async () => {
     // keep your policy: unmute only if allowed
-    v.muted = !canUnmute;
     v.playsInline = true;
-
+    v.muted = !canUnmute;
+  
     // If Safari/iOS lost the buffer, reload source
     if (v.readyState < 2) v.load();
 
@@ -75,7 +75,7 @@ export default function ScrollPlayVideo({
 
   const onVisibility = () => {
     if (document.visibilityState === "visible") {
-      if (isVisible) tryPlay();
+      tryPlay();
     } else {
       v.pause();
       v.muted = true;
@@ -85,9 +85,13 @@ export default function ScrollPlayVideo({
   window.addEventListener("pageshow", onPageShow);
   document.addEventListener("visibilitychange", onVisibility);
 
+  const onLoadData = () => { if (isVisible) tryPlay(); };
+  v.addEventListener("loadeddata", onLoadData);
+
   return () => {
     window.removeEventListener("pageshow", onPageShow);
     document.removeEventListener("visibilitychange", onVisibility);
+    v.removeEventListener("loadeddata", onLoadData);
   };
 }, [canUnmute, isVisible]);
 
@@ -124,7 +128,7 @@ export default function ScrollPlayVideo({
           }
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5, rootMargin: "0px 0px -10% 0px" }
     );
 
     io.observe(container);
@@ -184,18 +188,14 @@ export default function ScrollPlayVideo({
     >
       <video
         ref={videoRef}
-        src={src}
+    
         autoPlay
         loop
         preload="auto"
         playsInline
-        className={clsx(
-          "h-full w-full object-cover transition-opacity duration-700",
-          "[@media(prefers-reduced-motion:reduce)]:transition-none",
-          isVisible ? "opacity-100" : "opacity-0",
-          videoClassName
-        )}
-      />
+        muted>
+        <source src={src} type="video/mp4" />
+      </video>
 
       {/* Speaker button (tiny, auto-hides) */}
       <button
@@ -216,4 +216,4 @@ export default function ScrollPlayVideo({
       </button>
     </div>
   );
-}
+};
