@@ -80,7 +80,8 @@ export default function Home() {
     tabIndex={0}
   >
     <ScrollPlayVideo
-      src="https://cqpq0knj64bowgo5.public.blob.vercel-storage.com/Promo_Video.MP4"
+      src= "/Videos/Promo_Video_small.mp4"
+
       parallax
       driftPx={10}     
       // type is

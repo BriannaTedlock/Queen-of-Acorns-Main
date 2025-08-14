@@ -47,54 +47,34 @@ export default function ScrollPlayVideo({
   }, []);
 
   // NEW: best-effort auto-unmute when allowed by the browser
- useEffect(() => {
-  const v = videoRef.current;
-  if (!v) return;
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
 
-  const tryPlay = async () => {
-    // keep your policy: unmute only if allowed
-    v.playsInline = true;
-    v.muted = !canUnmute;
-  
-    // If Safari/iOS lost the buffer, reload source
-    if (v.readyState < 2) v.load();
+    const tryUnmute = async () => {
+      // If the user has interacted OR the browser otherwise permits, this may succeed.
+      try {
+        v.muted = false;
+        v.volume = 1;
+        await v.play();
+      } catch {
+        // If blocked, keep muted (policy)
+        v.muted = true;
+      }
+    };
 
-    try {
-      await v.play();
-    } catch {
-      // fall back to muted autoplay if blocked
-      v.muted = true;
-      v.play().catch(() => {});
-    }
-  };
+    // Try after metadata loads (source known), and again after "canplay"
+    const onLoaded = () => { if (isVisible) tryUnmute(); };
+    const onCanPlay = () => { if (isVisible) tryUnmute(); };
 
-  const onPageShow = () => {
-    // Resume only if the element should be visible
-    if (isVisible) tryPlay();
-  };
+    v.addEventListener("loadedmetadata", onLoaded);
+    v.addEventListener("canplay", onCanPlay);
 
-  const onVisibility = () => {
-    if (document.visibilityState === "visible") {
-      tryPlay();
-    } else {
-      v.pause();
-      v.muted = true;
-    }
-  };
-
-  window.addEventListener("pageshow", onPageShow);
-  document.addEventListener("visibilitychange", onVisibility);
-
-  const onLoadData = () => { if (isVisible) tryPlay(); };
-  v.addEventListener("loadeddata", onLoadData);
-
-  return () => {
-    window.removeEventListener("pageshow", onPageShow);
-    document.removeEventListener("visibilitychange", onVisibility);
-    v.removeEventListener("loadeddata", onLoadData);
-  };
-}, [canUnmute, isVisible]);
-
+    return () => {
+      v.removeEventListener("loadedmetadata", onLoaded);
+      v.removeEventListener("canplay", onCanPlay);
+    };
+  }, [isVisible]);
 
   // Play/pause + fade on visibility
   useEffect(() => {
@@ -187,15 +167,18 @@ export default function ScrollPlayVideo({
       onTouchStart={pokeUI}
     >
       <video
-        ref={videoRef}
-    
-        autoPlay
-        loop
-        preload="auto"
-        playsInline
-        muted>
-        <source src={src} type="video/mp4" />
-      </video>
+      ref={videoRef}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      crossOrigin="anonymous"    // helpful with blobs
+      className="h-full w-full object-cover"
+    >
+      <source src={src} type="video/mp4" />
+    </video>
+
 
       {/* Speaker button (tiny, auto-hides) */}
       <button
