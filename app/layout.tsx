@@ -6,6 +6,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { app } from "@/lib/firebase";
 import { FirebaseAuthProvider } from "@/contexts/FirebaseAuthContext";
 import { Alice } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next"
 
 const auth = getAuth(app);
 
@@ -37,6 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       {/* Alice everywhere */}
       <body className={`${alice.className} antialiased`}>
+        <Analytics />
+        {/* Firebase Auth Context Provider */}
         <FirebaseAuthProvider>{children}</FirebaseAuthProvider>
         <Toaster />
       </body>

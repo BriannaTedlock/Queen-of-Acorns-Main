@@ -12,7 +12,7 @@ import CocktailCarousel, { Cocktail } from '@/components/CocktailCarousel';
 export default function Home() {
  const cocktails: Cocktail[] = [
     { name: "Cherry Aperol Bourbon n' Coke", image: "/Images/Cocktails/CherryAperolBourbonCoke.jpeg" },
-    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonBerryHibiscusRumMule.jpeg" },
+    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonberryHibiscusRumMule.jpeg" },
     { name: "Expresso Martini", image: "/Images/Cocktails/ExpressoMartini.jpeg" },
     { name: "Frose and Apple Cider Mule", image: "/Images/Cocktails/FroseandAppleCiderMule.jpeg" },
     { name: "Mandarin Creamsicle Margarita", image: "/Images/Cocktails/MandarinCreamsicleMargarita.jpeg" },
