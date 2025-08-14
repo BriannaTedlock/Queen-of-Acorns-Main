@@ -167,20 +167,18 @@ export default function ScrollPlayVideo({
       onTouchStart={pokeUI}
     >
       <video
-        ref={videoRef}
-        src={src}
-        autoPlay
-        loop
-        preload="metadata"
-        // NEW: adds inline playback explicitly for iOS and keeps it responsive
-        playsInline
-        className={clsx(
-          "h-full w-full object-cover transition-opacity duration-700",
-          "[@media(prefers-reduced-motion:reduce)]:transition-none",
-          isVisible ? "opacity-100" : "opacity-0",
-          videoClassName
-        )}
-      />
+      ref={videoRef}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      crossOrigin="anonymous"    // helpful with blobs
+      className="h-full w-full object-cover"
+    >
+      <source src={src} type="video/mp4" />
+    </video>
+
 
       {/* Speaker button (tiny, auto-hides) */}
       <button
