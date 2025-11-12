@@ -36,8 +36,9 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, id: info.messageId });
-  } catch (err: any) {
-    console.error("Inquiry error:", err?.response || err?.message || err);
-    return NextResponse.json({ error: "Failed to send inquiry", detail: err?.message ?? "unknown" }, { status: 500 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("Inquiry error:", err);
+    return NextResponse.json({ error: "Failed to send inquiry", detail: msg }, { status: 500 });
   }
 }

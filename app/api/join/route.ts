@@ -20,11 +20,11 @@ export async function POST(req: Request) {
 
     if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
 
-    let attachments: Array<{ filename: string; content: Buffer }> = [];
-    if (resume && typeof resume.arrayBuffer === "function") {
-      const buf = Buffer.from(await resume.arrayBuffer());
-      attachments.push({ filename: resume.name || "resume.pdf", content: buf });
-    }
+    const attachments: Array<{ filename: string; content: Buffer }> = [];
+if (resume && typeof resume.arrayBuffer === "function") {
+  const buf = Buffer.from(await resume.arrayBuffer());
+  attachments.push({ filename: resume.name || "resume.pdf", content: buf });
+}
 
     const transporter = createMailer();
     await transporter.verify().catch(e => console.error("SMTP verify failed:", e));
@@ -67,8 +67,9 @@ ${message}`,
     });
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error("Apply error:", err?.response || err?.message || err);
-    return NextResponse.json({ error: "Failed to submit application.", detail: err?.message ?? "unknown" }, { status: 500 });
-  }
+  }  catch (err: unknown) {
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error("Join form error:", err);
+  return NextResponse.json({ error: "Failed to submit application.", detail: msg }, { status: 500 });
+}
 }

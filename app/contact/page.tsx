@@ -46,11 +46,12 @@ export default function ContactPage() {
       // ✅ reset + show success
       formRef.current?.reset()
       setSubmitted(true)
-    } catch (err: any) {
-      setError(err?.message || 'Failed to send. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    }catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : "Failed to send. Please try again.";
+  setError(msg);
+} finally {
+  setLoading(false);
+}
   }
 
   return (

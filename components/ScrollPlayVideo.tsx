@@ -15,7 +15,6 @@ interface ScrollPlayVideoProps {
 export default function ScrollPlayVideo({
   src,
   containerClassName,
-  videoClassName,
   resetOnView = false,
   parallax = false,
   driftPx = 10,

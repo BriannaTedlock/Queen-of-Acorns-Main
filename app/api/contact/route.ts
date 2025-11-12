@@ -62,10 +62,11 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, id: info.messageId });
-  } catch (err: any) {
-    console.error("Email error:", err?.response || err?.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("Email error:", err);
     return NextResponse.json(
-      { error: "Failed to send email", detail: err?.message ?? "unknown" },
+      { error: "Failed to send email", detail: msg },
       { status: 500 }
     );
   }
