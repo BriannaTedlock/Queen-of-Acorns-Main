@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -12,32 +12,45 @@ import Footer from '@/components/Footer'
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Auto-hide success after 4s
+  useEffect(() => {
+    if (!submitted) return
+    const t = setTimeout(() => setSubmitted(false), 4000)
+    return () => clearTimeout(t)
+  }, [submitted])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
 
     const formData = new FormData(e.currentTarget)
     const data: Record<string, string> = {}
-    formData.forEach((value, key) => {
-      data[key] = value.toString()
-    })
+    formData.forEach((value, key) => (data[key] = value.toString()))
 
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (res.ok) {
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.detail || j?.error || 'Failed to send. Please try again.')
+      }
+
+      // ✅ reset + show success
+      formRef.current?.reset()
       setSubmitted(true)
+    } catch (err: any) {
+      setError(err?.message || 'Failed to send. Please try again.')
+    } finally {
       setLoading(false)
-      // Optionally, redirect here after a short delay:
-      // setTimeout(() => window.location.href = "/", 1500)
-      return
-    } else {
-      alert('Failed to send. Please try again.')
     }
-    setLoading(false)
   }
 
   return (
@@ -59,11 +72,21 @@ export default function ContactPage() {
           />
         ))}
 
-        {/* Popup */}
+        {/* Success popup */}
         {submitted && (
-          <div className="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-xl shadow-xl text-center max-w-[90%] sm:max-w-md">
-            <h2 className="text-2xl font-bold text-[#5a7238] mb-2">Thank you!</h2>
-            <p>Your message has been sent. We&apos;ll get back to you soon!</p>
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* optional dim backdrop */}
+            <div className="absolute inset-0 bg-black/20" onClick={() => setSubmitted(false)} />
+            <div className="relative z-10 bg-white p-6 rounded-xl shadow-xl text-center max-w-[90%] sm:max-w-md">
+              <h2 className="text-2xl font-bold text-[#5a7238] mb-2">Thank you!</h2>
+              <p>Your message has been sent. We&apos;ll get back to you soon!</p>
+              <Button
+                className="mt-4 bg-[#5a7238] hover:bg-[#446022] text-white"
+                onClick={() => setSubmitted(false)}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         )}
 
@@ -74,15 +97,25 @@ export default function ContactPage() {
           </p>
 
           <form
+            ref={formRef}
             onSubmit={handleSubmit}
             className="bg-white p-6 rounded-xl shadow-md flex flex-col gap-4"
           >
-            <Input type="text" name="name" placeholder="Your Name" required />
+            <Input type="text" name="name" placeholder="Your Name" />
             <Input type="email" name="email" placeholder="Your Email" required />
             <Input type="tel" name="phone" placeholder="Phone Number" />
             <Textarea name="message" placeholder="Your Message" rows={5} required />
-            <Button type="submit" className="bg-[#5a7238] hover:bg-[#446022] text-white" disabled={loading}>
-              {loading ? "Sending..." : "Send Message"}
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+            )}
+
+            <Button
+              type="submit"
+              className="bg-[#5a7238] hover:bg-[#446022] text-white"
+              disabled={loading}
+            >
+              {loading ? 'Sending...' : 'Send Message'}
             </Button>
           </form>
         </div>

@@ -1,42 +1,43 @@
-import { NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { NextResponse } from "next/server";
+import { createMailer } from "@/lib/mailer";
+
+export const runtime = "nodejs";
+
+function escapeHtml(s: string) {
+  return s.toString().replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]!));
+}
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json()
+    const data = await req.json();
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    })
+    // Stronger guardrails
+    const email = (data.email ?? "").toString().trim();
+    const name  = (data.name  ?? "").toString().trim();
+    if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
 
-    const mailOptions = {
+    const transporter = createMailer();
+    await transporter.verify().catch(e => console.error("SMTP verify failed:", e));
+
+    // Build HTML safely
+    const htmlPairs = Object.entries(data).map(([key, value]) => {
+      const cleanKey = key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+      const val = Array.isArray(value) ? value.map(v => escapeHtml(String(v))).join(", ") : escapeHtml(String(value ?? "N/A"));
+      return `<p><strong>${escapeHtml(cleanKey)}:</strong> ${val}</p>`;
+    }).join("");
+
+    const info = await transporter.sendMail({
       from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`,
-      to: 'queenofacorns@yahoo.com, briannatedlock02@gmail.com',
-      subject: `New Inquiry from ${data.name || "No Name"}`,
-      html: `
-        <h2>New Inquiry Received</h2>
-        ${Object.entries(data).map(([key, value]) => {
-          const displayValue = Array.isArray(value)
-            ? value.join(", ")
-            : value
-          return `<p><strong>${key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}:</strong> ${displayValue}</p>`
-        }).join("")}
-      `,
-    }
+      to: ["queenofacorns@yahoo.com", "briannatedlock02@gmail.com"],
+      replyTo: email,
+      subject: `New Inquiry from ${name || "No Name"}`,
+      text: `New Inquiry from ${name || "No Name"} <${email}>`,
+      html: `<h2>New Inquiry Received</h2>${htmlPairs}`,
+    });
 
-    await transporter.sendMail(mailOptions)
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    let errorMsg = 'Failed to send email'
-    if (error instanceof Error) {
-      errorMsg = error.message
-    } else if (typeof error === 'string') {
-      errorMsg = error
-    }
-    return NextResponse.json({ error: errorMsg }, { status: 500 })
+    return NextResponse.json({ success: true, id: info.messageId });
+  } catch (err: any) {
+    console.error("Inquiry error:", err?.response || err?.message || err);
+    return NextResponse.json({ error: "Failed to send inquiry", detail: err?.message ?? "unknown" }, { status: 500 });
   }
 }

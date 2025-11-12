@@ -1,38 +1,72 @@
 // app/api/contact/route.ts
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
-import { NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+export const runtime = "nodejs"; // Nodemailer requires Node
+
+const isProd = process.env.NODE_ENV === "production";
+
+function required(name: string, val?: string) {
+  if (!val) throw new Error(`Missing env: ${name}`);
+  return val;
+}
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,                 // use 587 + secure:false if needed
+  secure: true,              // 465 => true
+  auth: {
+    user: required("EMAIL_USER", process.env.EMAIL_USER),
+    pass: required("EMAIL_PASS", process.env.EMAIL_PASS), // App Password
+  },
+  // Dev-only: helps when antivirus/VPN injects a self-signed cert locally
+  ...(process.env.ALLOW_INSECURE_TLS_DEV === "true" && !isProd
+    ? { tls: { rejectUnauthorized: false } }
+    : {}),
+});
+
+function escapeHtml(s: string) {
+  return s.toString().replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]!));
+}
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json()
+    // Optional: reveal precise SMTP problems in logs
+    await transporter.verify().catch(e => console.error("SMTP verify failed:", e));
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    })
+    const data = await req.json();
+    const name = (data.name ?? "").toString().trim();
+    const email = (data.email ?? "").toString().trim();
+    const phone = (data.phone ?? "").toString().trim();
+    const message = (data.message ?? "").toString().trim();
 
-    const mailOptions = {
-      from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`,
-      to: 'queenofacorns@yahoo.com, briannatedlock02@gmail.com',
-      subject: `New Contact Form Message from ${data.name || 'No Name'}`,
-      html: `
-        <h2>New Contact Message</h2>
-        <p><strong>Name:</strong> ${data.name || 'N/A'}</p>
-        <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-        <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
-        <p><strong>Message:</strong><br/>${data.message || 'N/A'}</p>
-      `,
+    if (!email || !message) {
+      return NextResponse.json({ error: "Email and message are required" }, { status: 400 });
     }
 
-    await transporter.sendMail(mailOptions)
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    let errorMsg = 'Failed to send email'
-    if (error instanceof Error) errorMsg = error.message
-    return NextResponse.json({ error: errorMsg }, { status: 500 })
+    const html = `
+      <h2>New Contact Message</h2>
+      <p><strong>Name:</strong> ${escapeHtml(name) || "N/A"}</p>
+      <p><strong>Email:</strong> ${escapeHtml(email) || "N/A"}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(phone) || "N/A"}</p>
+      <p><strong>Message:</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>") || "N/A"}</p>
+    `;
+
+    const info = await transporter.sendMail({
+      from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`,   // must be your Gmail/verified alias
+      to: ["queenofacorns@yahoo.com", "briannatedlock02@gmail.com"],
+      replyTo: email || process.env.EMAIL_USER,
+      subject: `New Contact Form Message from ${name || "No Name"}`,
+      text: `${name}\n${email}\n${phone}\n\n${message}`,
+      html,
+    });
+
+    return NextResponse.json({ success: true, id: info.messageId });
+  } catch (err: any) {
+    console.error("Email error:", err?.response || err?.message || err);
+    return NextResponse.json(
+      { error: "Failed to send email", detail: err?.message ?? "unknown" },
+      { status: 500 }
+    );
   }
 }
