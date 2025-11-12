@@ -108,7 +108,7 @@ export default function ScrollPlayVideo({
           }
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5, rootMargin: "0px 0px -10% 0px" }
     );
 
     io.observe(container);
@@ -199,4 +199,4 @@ export default function ScrollPlayVideo({
       </button>
     </div>
   );
-}
+};

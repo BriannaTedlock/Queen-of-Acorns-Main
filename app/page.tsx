@@ -12,7 +12,7 @@ import CocktailCarousel, { Cocktail } from '@/components/CocktailCarousel';
 export default function Home() {
  const cocktails: Cocktail[] = [
     { name: "Cherry Aperol Bourbon n' Coke", image: "/Images/Cocktails/CherryAperolBourbonCoke.jpeg" },
-    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonBerryHibiscusRumMule.jpeg" },
+    { name: "Dragonberry Hibiscus Rum Mule", image: "/Images/Cocktails/DragonberryHibiscusRumMule.jpeg" },
     { name: "Expresso Martini", image: "/Images/Cocktails/ExpressoMartini.jpeg" },
     { name: "Frose and Apple Cider Mule", image: "/Images/Cocktails/FroseandAppleCiderMule.jpeg" },
     { name: "Mandarin Creamsicle Margarita", image: "/Images/Cocktails/MandarinCreamsicleMargarita.jpeg" },
@@ -83,8 +83,8 @@ export default function Home() {
       src= "/Videos/Promo_Video_small.mp4"
 
       parallax
-      driftPx={10}     // tweak 8–12 for subtlety
-      // resetOnView     // enable if you want it to restart each time
+      driftPx={10}     
+      // type is
     />
   </div>
 </div>
