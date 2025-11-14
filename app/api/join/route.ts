@@ -4,7 +4,9 @@ import { createMailer } from "@/lib/mailer";
 export const runtime = "nodejs"; // required for Buffer, streams, SMTP
 
 function escapeHtml(s: string) {
-  return s.toString().replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]!));
+  return s
+    .toString()
+    .replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
 
 export async function POST(req: Request) {
@@ -18,21 +20,23 @@ export async function POST(req: Request) {
     const message  = (formData.get("message")  || "").toString().trim();
     const resume   = formData.get("resume") as File | null;
 
-    if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
 
     const attachments: Array<{ filename: string; content: Buffer }> = [];
-if (resume && typeof resume.arrayBuffer === "function") {
-  const buf = Buffer.from(await resume.arrayBuffer());
-  attachments.push({ filename: resume.name || "resume.pdf", content: buf });
-}
+    if (resume && typeof resume.arrayBuffer === "function") {
+      const buf = Buffer.from(await resume.arrayBuffer());
+      attachments.push({ filename: resume.name || "resume.pdf", content: buf });
+    }
 
     const transporter = createMailer();
     await transporter.verify().catch(e => console.error("SMTP verify failed:", e));
 
-    // 1) Send to your inbox
+    // 1) Send to your inbox (for now, ONLY to Yahoo to avoid 550 while debugging)
     await transporter.sendMail({
-      from: `"Queen of Acorns Careers" <${process.env.EMAIL_USER}>`,
-      to: ["queenofacorns@yahoo.com", "briannatedlock02@gmail.com"],
+      from: process.env.EMAIL_USER,            // e.g. queenofacorns@yahoo.com
+      to: process.env.EMAIL_USER,              // send only to yourself for now
       replyTo: email,
       subject: `New Team Application from ${name || "No Name"}`,
       text:
@@ -53,9 +57,9 @@ ${message}`,
       attachments,
     });
 
-    // 2) Confirmation to applicant (no attachment needed)
+    // 2) Confirmation to applicant (this one goes to *their* email)
     await transporter.sendMail({
-      from: `"Queen of Acorns Careers" <${process.env.EMAIL_USER}>`,
+      from: process.env.EMAIL_USER,         
       to: email,
       subject: `Thank you for applying to Queen of Acorns!`,
       html: `
@@ -67,9 +71,12 @@ ${message}`,
     });
 
     return NextResponse.json({ success: true });
-  }  catch (err: unknown) {
-  const msg = err instanceof Error ? err.message : String(err);
-  console.error("Join form error:", err);
-  return NextResponse.json({ error: "Failed to submit application.", detail: msg }, { status: 500 });
-}
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("Join form error:", err);
+    return NextResponse.json(
+      { error: "Failed to submit application.", detail: msg },
+      { status: 500 }
+    );
+  }
 }

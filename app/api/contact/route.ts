@@ -52,14 +52,21 @@ export async function POST(req: Request) {
       <p><strong>Message:</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>") || "N/A"}</p>
     `;
 
-    const info = await transporter.sendMail({
-      from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`,   // must be your Gmail/verified alias
-      to: ["queenofacorns@yahoo.com", "briannatedlock02@gmail.com"],
-      replyTo: email || process.env.EMAIL_USER,
-      subject: `New Contact Form Message from ${name || "No Name"}`,
-      text: `${name}\n${email}\n${phone}\n\n${message}`,
-      html,
-    });
+
+ const info = await transporter.sendMail({
+  from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`, 
+  to: [
+    "queenofacorns@yahoo.com",
+    "brokenbone01@gmail.com",
+  ],
+  replyTo: email,
+  subject: `New Contact Form Message from ${name || "No Name"}`,
+  text: `${name}\n${email}\n${phone}\n\n${message}`,
+  html,
+});
+
+
+
 
     return NextResponse.json({ success: true, id: info.messageId });
   } catch (err: unknown) {

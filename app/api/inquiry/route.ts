@@ -27,13 +27,14 @@ export async function POST(req: Request) {
     }).join("");
 
     const info = await transporter.sendMail({
-      from: `"Queen of Acorns" <${process.env.EMAIL_USER}>`,
-      to: ["queenofacorns@yahoo.com", "briannatedlock02@gmail.com"],
+      from: process.env.EMAIL_USER,           // exactly the Yahoo login
+      to: process.env.EMAIL_USER,             // send ONLY to yourself for now
       replyTo: email,
       subject: `New Inquiry from ${name || "No Name"}`,
       text: `New Inquiry from ${name || "No Name"} <${email}>`,
       html: `<h2>New Inquiry Received</h2>${htmlPairs}`,
     });
+
 
     return NextResponse.json({ success: true, id: info.messageId });
   } catch (err: unknown) {
